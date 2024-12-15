@@ -11,11 +11,10 @@ LIGHT_BLUE = "#CCEDFF"
 LIGHT_GRAY = "#F5F5F5"
 LABEL_COLOR = "#25265E"
 
-
 class Calculator:
     def __init__(self):
         self.window = tk.Tk()
-        self.window.geometry("500x667")
+        self.window.geometry("1000x667")
         self.window.resizable(0, 0)
         self.window.title("Calculator")
 
@@ -38,7 +37,10 @@ class Calculator:
         }
         self.convert_buttons = {
             'cm → m': (1, 6), 'm → cm': (2, 6),
-            'g → kg': (3, 6), 'kg → g': (4, 6)
+            'g → kg': (3, 6), 'kg → g': (4, 6),
+            'mm → m': (1, 7), 'm → mm': (2, 7),  # 밀리미터와 미터 변환 추가
+            'nm → m': (3, 7), 'm → nm': (4, 7),  # 나노미터와 미터 변환 추가
+            'µm → m': (1, 8), 'm → µm': (2, 8)   # 마이크로미터와 미터 변환 추가
         }
 
         self.buttons_frame = self.create_buttons_frame()
@@ -172,7 +174,6 @@ class Calculator:
         self.window.mainloop()
 
     def create_unit_buttons(self):
-        # 단위 버튼들
         for unit, (row, col) in self.unit_buttons.items():
             button = tk.Button(self.buttons_frame, text=unit, bg=WHITE, fg=LABEL_COLOR, font=DEFAULT_FONT_STYLE,
                                borderwidth=0, command=lambda x=unit: self.add_to_expression(x))
@@ -201,9 +202,32 @@ class Calculator:
             if 'kg' in self.current_expression:
                 value = float(self.current_expression.replace('kg', ''))
                 self.current_expression = str(value * 1000) + ' g'
+        elif conversion_type == 'mm → m':
+            if 'mm' in self.current_expression:
+                value = float(self.current_expression.replace('mm', ''))
+                self.current_expression = str(value / 1000) + ' m'
+        elif conversion_type == 'm → mm':
+            if 'm' in self.current_expression:
+                value = float(self.current_expression.replace('m', ''))
+                self.current_expression = str(value * 1000) + ' mm'
+        elif conversion_type == 'nm → m':
+            if 'nm' in self.current_expression:
+                value = float(self.current_expression.replace('nm', ''))
+                self.current_expression = str(value / 1e9) + ' m'
+        elif conversion_type == 'm → nm':
+            if 'm' in self.current_expression:
+                value = float(self.current_expression.replace('m', ''))
+                self.current_expression = str(value * 1e9) + ' nm'
+        elif conversion_type == 'µm → m':
+            if 'µm' in self.current_expression:
+                value = float(self.current_expression.replace('µm', ''))
+                self.current_expression = str(value / 1e6) + ' m'
+        elif conversion_type == 'm → µm':
+            if 'm' in self.current_expression:
+                value = float(self.current_expression.replace('m', ''))
+                self.current_expression = str(value * 1e6) + ' µm'
         
         self.update_label()
-
 
 if __name__ == "__main__":
     calc = Calculator()
